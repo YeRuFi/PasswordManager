@@ -52,10 +52,10 @@ void program_startup()
     unsigned char *bss_start=&_bss_start;
     unsigned char *bss_end=&_bss_end;
     memcpy(data, etext, edata-data); //use library funs as availble
-    memset(bss_start, 0, bss_end-bss_start); //faster as already on right frequency; boot in 100ms
+    memset(bss_start, 0, bss_end-bss_start);
 
 	//Move on to stage 2
-	_init();//non board specific
+	_init();
 
 	//If main returns, reboot
 	NVIC_SystemReset();

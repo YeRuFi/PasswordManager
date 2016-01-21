@@ -18,6 +18,7 @@ SUBDIRS := $(KPATH)
 ##
 SRC :=                                  \
 main.cpp
+##added button
 
 ##
 ## List here additional static libraries with relative path
