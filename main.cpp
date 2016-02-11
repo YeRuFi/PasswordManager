@@ -4,21 +4,25 @@
 #include <string>
 
 using namespace miosix;
+FlashDriver& flashdriver = FlashDriver::instance();
+unsigned int startAddress;
+
+bool writePassword(char c)
+{
+	//FlashDriver& flashdriver = FlashDriver::instance();
+	//startAddress= flashdriver.getSectorAddress(flashdriver.getStartSector());
+	//flashdriver.erase(flashdriver.getStartSector());	
+	return flashdriver.write(0xF8000,c); //parameters are address to write to and char to write
+}
 
 int main()
 {
-    for(;;)
-    {
-	char test= 'p';
-	printf("This character will be written to address 0xFFFDF: %c\n", test);     
-	ledOn();      
-	FlashDriver& flashdriver = FlashDriver::instance();
-	flashdriver.write(0xFFFDF,test); //parameters are address to write to and char to write
-	ledOff();
-	printf("Character read at address 0xFFFDF: ");	
-	memDump((char *) 0xFFFDF, 1);
+	char test= 'p';	
+	printf("Enter character to be written to address 0xF8000: ");     
+	scanf("%c", &test);	     
+	bool w = writePassword(test);
+	printf("Write result: %i,Character read at address 0xF8000: ", (int) w);	
+	memDump((char *) 0xF8000, 4);
         printf("\n");
-	Thread::sleep(1000);//testing
-	
-    }
+		
 }
