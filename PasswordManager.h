@@ -1,7 +1,7 @@
 /***************************************************************************
 
  *   Copyright (C) 2016 by                                                 * 
- *                    *
+ *          Rose Vinay Kumar Yelluri, Jan Fischer, Arlind Rufi		   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -30,15 +30,17 @@
 #ifndef PASSWORDMANAGER_H
 #define	PASSWORDMANAGER_H
 
-#define ADDRESS 0xF8000
+#define ADDRESS 0x080F7FFC9 //0x080F8000- 6
 
-#include "FlashDriver.h"
-#include "FileSystem.h"
+#include <FlashDriver.h>
 #include <string>
+#include <iostream>
+
+using namespace std;
 
 struct WPTuple {
-	volatile char[32] website;
-	volatile char[32] password;
+	volatile char website[32];
+	volatile char password[32];
 };
 
 
@@ -47,30 +49,30 @@ class PasswordManager
 
 public:
 
-    /**
-     * 
-     * Starts the UserInterface of the PasswordManager
-     * 
-     */
-    void startUI();
+   	 /**
+   	  * 
+   	  * Starts the UserInterface of the PasswordManager
+   	  * 
+   	  */
+   	 void startUI();
     
- 
-private:
-    
-    
-  	 /**
+	/**
    	  * Constructor
    	  * 
    	  */
-   	PasswordManager();
+   	//PasswordManager();
+ 
+private:
+    
 
 	/**
 	  * Attributes
   	  */
-    	WPTuple[512] passwords; //pointer?
- 	//const unsigned int address; //address of passwords in Flash (constant 0xF8000); better with DEFINE?
-	//unsigned int masterAdress; // necessary? 
-	int numOfPass; //number of stored passwords
+    	WPTuple passwords[512]; //pointer?
+	int checksum; // hash of passwords array
+	short numOfPass; // number of currently stored passwords
+	bool changed; // true when commit is necessary (flash write)
+	//const unsigned int address; //address of passwords in Flash (constant 0xF8000); better with DEFINE?
 
 	/**
    	  * stores master password to flash (encrypted)
@@ -84,12 +86,51 @@ private:
 	  * \param pass password inserted by user
 	  * \return true when password is correct
    	  */	
-	bool checkMasterPassword(string pass);
+	//bool checkMasterPassword(string pass); //remove
 	
 	/**
-   	  * initializes passwords by loading it from the Flash
+   	  * Initializes passwords[], checksum, numOfPass by loading them from the Flash (load previous stored passwords)
    	  */	
 	void loadData();
+
+	/**
+   	  * Writes data to the flash (Commit), only necessary when changed true and user wants to commit
+	  * \return true no write errors
+   	  */	
+	bool storeData();
+	
+	/**
+	  * \param website to be searched for
+	  * \return password for the website
+   	  */	
+	string searchPassword(string website);
+
+	/**
+	  * prints all website password tuples on the console
+   	  */	
+	void printAll();
+	
+	/**
+	  * \param website to be searched for
+   	  */	
+	void addPassword(string website, string password);
+
+	/**
+	  * \param website to be removed (including password)
+	  * \return true: succesful removed
+   	  */	
+	bool remove(string website);
+
+	/**
+	  * Encrypts the attributes (data), will be saved in the attributes
+   	  */	
+	void encrypt();
+
+	/**
+	  * Decrypts the attributes (data)
+   	  * \return true: password correct
+   	  */		
+	bool decrypt();
 };
 
 
