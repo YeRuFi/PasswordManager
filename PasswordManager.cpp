@@ -6,6 +6,7 @@
 #include "md5.h"
 #include "PasswordManager.h"
 #include <stdlib.h>
+#include <string>
 //using namespace miosix;
 
 //PasswordManager::PasswordManager();
@@ -65,10 +66,10 @@ unsigned char * PasswordManager::encrypt(){
          for(i=sizeOfInput;i<sizeOfInput+16;i++){
          toEncrypt[i]=checksum[i-sizeOfInput];
          }
-         unsigned char * iv;//ask the professor if necessary
+         unsigned char * iv;
          mbedtls_md5((const unsigned char *)key,32, iv );
          //encrypt the given array and put it in the array to be returned
-         AES128_CBC_encrypt_buffer(outputEn,toEncrypt,numOfPass*2*PASSWORDLENGTH+16, key,(const unsigned char *)iv);
+         AES128_CBC_encrypt_buffer(outputEn,toEncrypt,numOfPass*2*PASSWORDLENGTH+16, (const unsigned char*)key,(const unsigned char *)iv);
          //not sure ? free the memory allocated to the arrays
          free(toEncrypt);
          free(inputEn);
@@ -83,7 +84,7 @@ bool PasswordManager::decrypt(unsigned char * input){
          unsigned char * iv;
          mbedtls_md5((const unsigned char *)key,32, iv );
          //decrypt the givin array after the load from the memory
-         AES128_CBC_decrypt_buffer(outputEn,input, numOfPass*2*PASSWORDLENGTH+16, key,(const unsigned char *)iv);
+         AES128_CBC_decrypt_buffer(outputEn,input, numOfPass*2*PASSWORDLENGTH+16, (const unsigned char*)key,(const unsigned char *)iv);
          //divide the buffer after decrypt into checksum and array to be turned in the array of WPTuples if decryption correct
          for(i=0;i<sizeOfInput-16;i++){
          toTransform[i]=outputEn[i];
@@ -109,6 +110,44 @@ bool PasswordManager::decrypt(unsigned char * input){
          
          return true;         
 }
+void PasswordManager::createKey(string password){
+         const char * toTransform=password.c_str();
+         unsigned char * hashedToTransform;
+         mbedtls_md5((const unsigned char *)toTransform,16, hashedToTransform );
+         int i;
+         //create key
+         for(i=0;i<16;i++){
+            key[i]=hashedToTransform[i];
+         }
+         for(i=0;i<16;i++){
+            key[i+16]=hashedToTransform[i];
+         }      
+}
+bool PasswordManager::cmpChar(char one[32],char two[32]){
+        int i;
+        for(i=0;i<32;i++){
+           if(one[i]!=two[i]){
+             return false;
+           }
+        }
+        return true;
+}
+
+
+
+char * PasswordManager::transformString(string input){
+         char * output=(char *) malloc(32*sizeof(char));
+         const char * toCopy=input.c_str();
+         int i;
+         int size=sizeof(input);
+         for(i=0;i<size;i++){
+         output[i]=toCopy[i];
+         }
+         for(i=size;i<32;i++){
+         output[i]='.';
+         }   
+}
+
 
 
 

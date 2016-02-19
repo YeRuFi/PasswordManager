@@ -40,8 +40,8 @@
 using namespace std;
 
 struct WPTuple {
-	volatile char website[32];
-	volatile char password[32];
+	char website[32];
+	char password[32];
 };
 
 
@@ -73,23 +73,10 @@ private:
 	unsigned char checksum[16]; // hash of passwords array
 	short numOfPass; // number of currently stored passwords
 	bool changed; // true when commit is necessary (flash write)
-	const unsigned char key[32];// a variable to save the key to encrypt the data
+	unsigned char key[32];// a variable to save the key to encrypt the data
         unsigned char * encryptedData; //to put the encrypted data after load from flash
         //const unsigned int address; //address of passwords in Flash (constant 0xF8000); better with DEFINE?
 
-	/**
-   	  * stores master password to flash (encrypted)
-	  * \param pass new Password
-	  * \return true when no error
-   	  */	
-	bool setMasterPassword(string pass);
-	
-	/**
-   	  * compares pass to the master password
-	  * \param pass password inserted by user
-	  * \return true when password is correct
-   	  */	
-	//bool checkMasterPassword(string pass); //remove
 	
 	/**
    	  * Initializes passwords[], checksum, numOfPass by loading them from the Flash (load previous stored passwords)
@@ -151,8 +138,25 @@ private:
           *\return the wanted array of WPTuples
           */
         WPTuple * arrayToStruct(char * input,int numOfPasswords,int lengthOfWebsite); 
-
-
+        /**
+          *Creates the key to encrypt and decrypt data from the password that the user is going to put
+          *\param password the password that the user puts
+          */
+        void createKey(string password);
+        /**
+          *Compares two array of 32 bytes 
+          *\param one first array to compare
+          *\param two second array to compare
+          *\return true if the two arrays contain the same chars
+          */
+        bool cmpChar(char * one,char * two);
+        /**
+          *Transform a given string to a char * of 32 bytes
+          *\param input the string to transform
+          *\return the char array
+          */
+        char * transformString(string input);
+         
 };
 
 
