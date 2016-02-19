@@ -31,8 +31,9 @@
 #define	PASSWORDMANAGER_H
 
 #define ADDRESS 0x080F7FFC9 //0x080F8000- 6
+#define PASSWORDLENGTH 32 //the maximum number of bytes for each password also website
 
-#include <FlashDriver.h>
+//#include <FlashDriver.h>
 #include <string>
 #include <iostream>
 
@@ -68,11 +69,13 @@ private:
 	/**
 	  * Attributes
   	  */
-    	WPTuple passwords[512]; //pointer?
-	int checksum; // hash of passwords array
+    	WPTuple *passwords; //pointer?
+	unsigned char checksum[16]; // hash of passwords array
 	short numOfPass; // number of currently stored passwords
 	bool changed; // true when commit is necessary (flash write)
-	//const unsigned int address; //address of passwords in Flash (constant 0xF8000); better with DEFINE?
+	const unsigned char key[32];// a variable to save the key to encrypt the data
+        unsigned char * encryptedData; //to put the encrypted data after load from flash
+        //const unsigned int address; //address of passwords in Flash (constant 0xF8000); better with DEFINE?
 
 	/**
    	  * stores master password to flash (encrypted)
@@ -123,14 +126,33 @@ private:
 
 	/**
 	  * Encrypts the attributes (data), will be saved in the attributes
+          * \return An encryted array of the data that the structure has
    	  */	
-	void encrypt();
+	unsigned char* encrypt();
 
 	/**
 	  * Decrypts the attributes (data)
    	  * \return true: password correct
    	  */		
-	bool decrypt();
+	bool decrypt(unsigned char * input);
+        /**
+          *Transforms the array of WPTuples into a single array of characters to be used for encryption and decryption
+          *\param input[] the array of structures
+          *\param numOfPasswords the number of passwords saved in the array
+          *\param the length of the website and password array in the struct
+          *\return the wanted array
+          */
+        char * structToArray(WPTuple input[],int numOfPasswords,int lengthOfWebsite);  
+        /**
+          *Transforms a given array of characters into an array of WPTuples to be used for adding removing passwords
+          *\param input[] the array to transform
+          *\param numOfPasswords the number of passwords saved in the array
+          *\param the length of the website and password array 
+          *\return the wanted array of WPTuples
+          */
+        WPTuple * arrayToStruct(char * input,int numOfPasswords,int lengthOfWebsite); 
+
+
 };
 
 
