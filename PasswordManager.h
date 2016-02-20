@@ -164,7 +164,17 @@ private:
           *\return string 
           */
         char * transformArray(char input[32]);  
-         
+        /**
+          *
+          */
+        void changePassword(char * website);
+        /**
+          *gets the position of an website in the passwords array
+          *\param input the array of which we want to find the position
+          *\return int the position of the array -1 if not found
+          */
+        int getPosition(char * input);
+      
 };
 
 
