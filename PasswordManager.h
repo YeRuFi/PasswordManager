@@ -90,10 +90,11 @@ private:
 	bool storeData();
 	
 	/**
+          * searches for a given website if it is in the array of WTPuples prints it if exists
 	  * \param website to be searched for
-	  * \return password for the website
+	  * \return true if the website is in the array of data structures 
    	  */	
-	string searchPassword(string website);
+	bool searchPassword(char * website);
 
 	/**
 	  * prints all website password tuples on the console
@@ -101,15 +102,16 @@ private:
 	void printAll();
 	
 	/**
-	  * \param website to be searched for
+	  * \param website to add 
+          * \param password to add
    	  */	
-	void addPassword(string website, string password);
+	void addPassword(char * website, char * password);
 
 	/**
 	  * \param website to be removed (including password)
 	  * \return true: succesful removed
    	  */	
-	bool remove(string website);
+	bool remove(char * website);
 
 	/**
 	  * Encrypts the attributes (data), will be saved in the attributes
@@ -142,7 +144,7 @@ private:
           *Creates the key to encrypt and decrypt data from the password that the user is going to put
           *\param password the password that the user puts
           */
-        void createKey(string password);
+        void createKey(char * password);
         /**
           *Compares two array of 32 bytes 
           *\param one first array to compare
@@ -151,11 +153,17 @@ private:
           */
         bool cmpChar(char * one,char * two);
         /**
-          *Transform a given string to a char * of 32 bytes
-          *\param input the string to transform
+          *add . to make an array into a 32 bytes array
+          *\param array to add points
           *\return the char array
           */
-        char * transformString(string input);
+        char * addCharacters(char * input);
+        /**
+          *Get the characters to print from an array of 32 bytes 
+          *\param input the array to be transformed
+          *\return string 
+          */
+        char * transformArray(char input[32]);  
          
 };
 
