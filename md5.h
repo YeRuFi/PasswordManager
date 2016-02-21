@@ -30,7 +30,6 @@
 #include <stdint.h>
 
 
-extern "C" {
 
 /**
  * \brief          MD5 context structure
@@ -93,9 +92,8 @@ void mbedtls_md5_finish( mbedtls_md5_context *ctx, unsigned char output[16] );
 /* Internal use */
 void mbedtls_md5_process( mbedtls_md5_context *ctx, const unsigned char data[64] );
 
-}
 
-extern "C" {
+
 
 
 /**
@@ -114,5 +112,5 @@ void mbedtls_md5( const unsigned char *input, size_t ilen, unsigned char output[
  */
 int mbedtls_md5_self_test( int verbose );
 
-}
+
 
