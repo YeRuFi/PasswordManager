@@ -1,6 +1,6 @@
 #include <miosix.h>
 #include <string>
-#include <iostream>
+#include <stdio.h>
 #include <FlashDriver.h>
 #include <PasswordManager.h>
 
@@ -16,13 +16,12 @@ using namespace std;
 void PasswordManager::startUI()
 {
 	string command="help";	
-	cout<<"Welcome to the Password Manager\n";
+	printf("Welcome to the Password Manager\n");
 	
 	//cout<<"Loading data... please wait.";
 	//PasswordManager::loadData();
 	//cout<<"Please enter the master password: \n";
-	cin>>command;
-	
+		
 }
 
 bool PasswordManager::storeData()

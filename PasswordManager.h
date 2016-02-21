@@ -30,7 +30,7 @@
 #ifndef PASSWORDMANAGER_H
 #define	PASSWORDMANAGER_H
 
-#define ADDRESS 0x080F7FFC9 //0x080F8000- 6
+#define ADDRESS 0x080F8000 //0x080F7FFC9
 
 #include <FlashDriver.h>
 #include <string>
@@ -39,8 +39,8 @@
 using namespace std;
 
 struct WPTuple {
-	volatile char website[32];
-	volatile char password[32];
+	char website[32];
+	char password[32];
 };
 
 
@@ -61,18 +61,31 @@ public:
    	  * 
    	  */
    	//PasswordManager();
+
+	/**
+   	  * Constructor to give an address where to store data on flash
+   	  * 
+   	  */
+   	//PasswordManager(unsigned int address);
  
-private:
+//private: //commented for testing !!uncomment before using
     
 
 	/**
-	  * Attributes
+	  * Attributes stored on flash
   	  */
-    	WPTuple passwords[512]; //pointer?
+    	WPTuple passwords[510]; //pointer?
 	int checksum; // hash of passwords array
 	short numOfPass; // number of currently stored passwords
-	bool changed; // true when commit is necessary (flash write)
 	//const unsigned int address; //address of passwords in Flash (constant 0xF8000); better with DEFINE?
+	
+	/**
+	  * Temporal Attributes
+  	  */
+	
+	//start address to store data on flash
+	unsigned int address; //there must be 32 KiB space (on one single sector) after this address
+	bool changed; // true when commit is necessary (flash write)
 
 	/**
    	  * stores master password to flash (encrypted)
@@ -130,7 +143,8 @@ private:
 	  * Decrypts the attributes (data)
    	  * \return true: password correct
    	  */		
-	bool decrypt();
+private:	bool decrypt();
+
 };
 
 
