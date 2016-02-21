@@ -1,13 +1,13 @@
-//#include <miosix.h>
+#include <miosix.h>
 #include <string.h>
 #include <iostream>
-//#include <FlashDriver.h>
+#include <FlashDriver.h>
 #include "aes.h"
 #include "md5.h"
 #include "PasswordManager.h"
 #include <stdlib.h>
 #include <stdio.h>
-//using namespace miosix;
+using namespace miosix;
 
 //PasswordManager::PasswordManager();
 char * PasswordManager::structToArray(WPTuple input[],int numOfPasswords,int lengthOfWebsite){
