@@ -30,10 +30,11 @@
 #ifndef PASSWORDMANAGER_H
 #define	PASSWORDMANAGER_H
 
-#define ADDRESS 0x080F7FFC9 //0x080F8000- 6
 #define PASSWORDLENGTH 32 //the maximum number of bytes for each password also website
+#define MAXSTORED 510 //the maximum number of passwords that can be stored
+#define STANDARD_ADDRESS 0x080F8000 //the standard address in sector 11 
 
-//#include <FlashDriver.h>
+#include <FlashDriver.h>
 #include <string>
 #include <iostream>
 
@@ -61,22 +62,34 @@ public:
    	  * Constructor
    	  * 
    	  */
-   	//PasswordManager();
+   	PasswordManager();
+        /**
+          * Constructor to be used in case of multi user
+          *\param address of the flash where the data starts ,it should be one for a sector and there should be 32kib of memory 
+          */
+        PasswordManager(unsigned int address);
  
 private:
     
 
 	/**
 	  * Attributes
+  	  */ 
+	bool changed; // true when commit is necessary (flash write)
+	unsigned char key[32];// a variable to save the key to encrypt the data
+        unsigned int address; //address of passwords in Flash (constant 0xF8000); better with DEFINE?
+        
+        /**
+	  * Attributes to be encrypted
   	  */
     	WPTuple *passwords; //pointer?
 	unsigned char checksum[16]; // hash of passwords array
-	short numOfPass; // number of currently stored passwords
-	bool changed; // true when commit is necessary (flash write)
-	unsigned char key[32];// a variable to save the key to encrypt the data
+	
+ 	/**
+          *Attributes stored on the flash
+          */
         unsigned char * encryptedData; //to put the encrypted data after load from flash
-        //const unsigned int address; //address of passwords in Flash (constant 0xF8000); better with DEFINE?
-
+	short numOfPass; // number of currently stored passwords
 	
 	/**
    	  * Initializes passwords[], checksum, numOfPass by loading them from the Flash (load previous stored passwords)

@@ -1,6 +1,5 @@
 #include <miosix.h>
 #include <string.h>
-#include <iostream>
 #include <FlashDriver.h>
 #include "aes.h"
 #include "md5.h"
@@ -9,7 +8,18 @@
 #include <stdio.h>
 using namespace miosix;
 
-//PasswordManager::PasswordManager();
+PasswordManager::PasswordManager():
+changed(false),
+numOfPass(0),
+address(STANDARD_ADDRESS)
+{
+        encryptedData=new unsigned char[MAXSTORED*2*PASSWORDLENGTH+16];//website length is the same as PASSWORDLENGTH ,16 for checksum
+        passwords=new WPTuple[MAXSTORED];
+
+}
+
+
+
 char * PasswordManager::structToArray(WPTuple input[],int numOfPasswords,int lengthOfWebsite){
 	int i,j,z;
 	char *output;
