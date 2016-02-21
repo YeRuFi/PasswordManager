@@ -9,6 +9,7 @@
 using namespace miosix;
 
 PasswordManager::PasswordManager():
+firstUse(false),
 changed(false),
 numOfPass(0),
 address(STANDARD_ADDRESS)

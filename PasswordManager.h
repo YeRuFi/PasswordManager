@@ -78,6 +78,7 @@ private:
 	bool changed; // true when commit is necessary (flash write)
 	unsigned char key[32];// a variable to save the key to encrypt the data
         unsigned int address; //address of passwords in Flash (constant 0xF8000); better with DEFINE?
+        bool firstUse;//true if there is no data in the flash ,master password has to be set
         
         /**
 	  * Attributes to be encrypted
