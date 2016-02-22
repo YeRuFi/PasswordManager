@@ -31,7 +31,7 @@ address(addr)
 
 }
 
-PassordManager::~PassordManager()
+PasswordManager::~PasswordManager()
 {
 	delete[] encryptedData;
         delete[] passwords;
