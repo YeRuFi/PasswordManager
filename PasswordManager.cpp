@@ -20,6 +20,23 @@ address(STANDARD_ADDRESS)
 }
 
 
+PasswordManager::PasswordManager(unsigned int addr):
+firstUse(false),
+changed(false),
+numOfPass(0),
+address(addr)
+{
+        encryptedData=new unsigned char[MAXSTORED*2*PASSWORDLENGTH+16];//website length is the same as PASSWORDLENGTH ,16 for checksum
+        passwords=new WPTuple[MAXSTORED];
+
+}
+
+//dummy
+void PasswordManager::startUI()
+{
+        printf("Welcome to the Password Manager!");
+}
+
 
 char * PasswordManager::structToArray(WPTuple input[],int numOfPasswords,int lengthOfWebsite){
 	int i,j,z;
