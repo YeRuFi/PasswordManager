@@ -33,7 +33,7 @@ void SlotPasswordManager::startUI()
 						printf("Invalid input... \n");
 						goto askinput;
 				       }
-		pwm.startUI();
+		pwm->startUI();
 
 		printf("Press enter to shutdown, type restart to login again\n");		
 		scanf("%s",input);
