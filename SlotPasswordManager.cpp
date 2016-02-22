@@ -1,10 +1,6 @@
-#include <miosix.h>
 #include <stdio.h>
 #include <PasswordManager.h>
 #include <SlotPasswordManager.h>
-
-using namespace miosix;
-
 
 void SlotPasswordManager::startUI()
 {
@@ -36,8 +32,7 @@ void SlotPasswordManager::startUI()
 		pwm->startUI();
 		
 		delete pwm;		
-		printf("Press enter to shutdown, type restart to login again\n");		
+		printf("Press enter to exit, type restart to login again\n");		
 		scanf("%s",input);
 	} while(input!="");
-	shutdown();
 }

@@ -8,4 +8,5 @@ int main()
 {
 	SlotPasswordManager mupwm;
 	mupwm.startUI();
+	shutdown();
 }
