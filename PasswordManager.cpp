@@ -31,10 +31,17 @@ address(addr)
 
 }
 
+PassordManager::~PassordManager()
+{
+	delete[] encryptedData;
+        delete[] passwords;
+}
+
 //dummy
 void PasswordManager::startUI()
 {
-        printf("Welcome to the Password Manager!");
+        printf("Welcome to the Password Manager!\n");
+	printf("My address is %i\n", this->address);
 }
 
 
