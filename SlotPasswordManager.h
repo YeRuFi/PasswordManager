@@ -36,7 +36,7 @@
 #define ADDRESS3 0x080A0000 //first address of sector 9
 #define ADDRESS4 0x08080000 //first address of sector 8
 
-#define HELP "This is the help text" //help text will be shown when help command is typed
+#define HELP "The Password Manager provides 4 slots on the flash. So up to 4 users can store their passwords. You can enter a number (e.g. 4) to use the correspondent slot. Note that you should remember your slot number and always use the same, in order to see your passwords. \n" //help text will be shown when help command is typed
 
 #include <PasswordManager.h>
 
