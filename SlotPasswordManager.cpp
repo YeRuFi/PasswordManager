@@ -34,7 +34,8 @@ void SlotPasswordManager::startUI()
 						goto askinput;
 				       }
 		pwm->startUI();
-
+		
+		delete pwm;		
 		printf("Press enter to shutdown, type restart to login again\n");		
 		scanf("%s",input);
 	} while(input!="");
