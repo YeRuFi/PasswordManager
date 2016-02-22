@@ -1,5 +1,7 @@
+#include <miosix.h>
 #include <stdio.h>
 #include <PasswordManager.h>
+#include <SlotPasswordManager.h>
 
 using namespace miosix;
 
@@ -16,7 +18,7 @@ void SlotPasswordManager::startUI()
 		if(input[0]=='h')
 		{
 			printf(HELP);
-			goto askinput
+			goto askinput;
 		}
 		else if(input[0]=='1')
 			printf("1");
