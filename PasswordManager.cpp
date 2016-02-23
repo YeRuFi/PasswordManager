@@ -9,9 +9,16 @@ using namespace miosix;
 using namespace std;
 
 
-/*PasswordManager::PasswordManager(): 
-	address(0x080F8000){}
-*/
+PasswordManager::PasswordManager():
+firstUse(false),
+changed(false),
+numOfPass(0),
+address(STANDARD_ADDRESS)
+{
+        encryptedData=new unsigned char[MAXSTORED*2*PASSWORDLENGTH+16];//website length is the same as PASSWORDLENGTH ,16 for checksum
+        passwords=new WPTuple[MAXSTORED];
+}
+
 
 void PasswordManager::startUI()
 {
@@ -57,9 +64,35 @@ bool PasswordManager::storeData()
 	char* ramAddress = (char*) &numOfPass; //get address of numOfPass
 	//write numOfPass of length 2 (short) to the flash:	
 	success &= flashdriver.write(address+4, ramAddress, 2);
-	//write char array of length sizeof(WPTuple)*numOfPass to flash
-	success &= flashdriver.write(address+6, ramAddress, PASSWORDLENGTH*2*numOfPass);
+	//write encryptedData (char array) of length sizeof(WPTuple)*numOfPass+sizeof(checksum) to flash
+	ramAddress = (char*) encryptedData; //convert unsigned char* to char*	
+	success &= flashdriver.write(address+6, ramAddress, PASSWORDLENGTH*2*numOfPass+16);
 	return success;
+}
+
+void PasswordManager::loadData()
+{
+	//check for identifier at the flash address:	
+	char ident[4];
+	void* ramAddress= (void*) ident; //get ident address	
+	memcpy(ramAddress,(void*) address,4); //copy char[4]
+	if(strcmp(ident,"PWM")==0)
+	{
+		firstUse=false;	//valid data available	
+		//load numOfPass from flash:
+		ramAddress= (void*) &numOfPass; // get attribute address		
+		memcpy(ramAddress,(void*) (address+4),2); //copy short
+//add integrity check for numOfPass?	
+		//load passwords from flash:
+		ramAddress= (void*) encryptedData; // get attribute address		
+		memcpy(ramAddress,(void*) (address+6),PASSWORDLENGTH*2*numOfPass+16); //copy all WPTuples and checksum
+	}
+	else
+	{
+		//invalid data in flash
+		firstUse=true;
+		numOfPass=0;
+	}
 }
 
 	
