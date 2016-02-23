@@ -8,22 +8,18 @@ using namespace miosix;
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!all functions and attributes are public for testing!!!!!!!!!
 void writeTest()
 {
-	printf("WriteTest");	
+	printf("WriteTest\n");	
 	char p;	
 	scanf("%c",&p);	//breakpoint
-	//printf("WriteTestprintf");
 	PasswordManager *pwm = new PasswordManager();
-	/*string web, pas;
-	cout<<"Website: \n";
-	cin>>web;
-	cout<<"Password: \n";	
-	cin>>pas;	
-	//pwm.addPassword(web,pas);*/
-	
-	strcpy(pwm->passwords[0].website, "Hello");
-	if(pwm->storeData())
-		printf("Succesful");
+	pwm->encryptedData= new unsigned char[510]; //done by constructor in newer version
+	pwm->numOfPass=20;
+	strcpy(((char*)(pwm->encryptedData))+50, "Hello");
+	if(!pwm->storeData())
+		printf("Not Succesful\n");
 	memDump((char *) 0x080F8000, 9);
+	memDump((char *) 0x080F8030, 10);
+	memDump((char *) 0x080F8230, 5);
 }
 
 int main()
