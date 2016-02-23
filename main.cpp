@@ -12,7 +12,6 @@ void writeTest()
 	char p;	
 	scanf("%c",&p);	//breakpoint
 	PasswordManager *pwm = new PasswordManager();
-	pwm->encryptedData= new unsigned char[510]; //done by constructor in newer version
 	pwm->numOfPass=20;
 	strcpy(((char*)(pwm->encryptedData))+50, "Hello");
 	if(!pwm->storeData())
