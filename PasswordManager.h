@@ -69,7 +69,7 @@ public:
           */
         PasswordManager(unsigned int address);
  
-private:
+//private: //only for testing commented
     
 
 	/**
