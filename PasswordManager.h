@@ -30,9 +30,9 @@
 #ifndef PASSWORDMANAGER_H
 #define	PASSWORDMANAGER_H
 
-#define PASSWORDLENGTH 32 //the maximum number of bytes for each password also website
+#define PASSWORDLENGTH 32 //the maximum number of bytes for each password or website
 #define MAXSTORED 510 //the maximum number of passwords that can be stored
-#define STANDARD_ADDRESS 0x080F8000 //the standard address in sector 11 
+#define STANDARD_ADDRESS 0x080F8000 //the standard address in sector 11 as far from os as possible 
 
 #include <FlashDriver.h>
 #include <string>
@@ -41,8 +41,8 @@
 using namespace std;
 
 struct WPTuple {
-	char website[32];
-	char password[32];
+	char website[PASSWORDLENGTH];
+	char password[PASSWORDLENGTH];
 };
 
 
@@ -64,8 +64,9 @@ public:
    	  */
    	PasswordManager();
         /**
-          * Constructor to be used in case of multi user
-          *\param address of the flash where the data starts ,it should be one for a sector and there should be 32kib of memory 
+          * Constructor whcih allows to start the pm with different address
+	  * For instance it can be used for multi user support
+          *\param address in flash to put data, 32KiB necessary in 1 sector, only 1 password manager/sector is supported
           */
         PasswordManager(unsigned int address);
  
