@@ -78,9 +78,7 @@ unsigned char * PasswordManager::encrypt(){
          toEncrypt[i]=checksum[i-sizeOfInput];
          }
          unsigned char * iv=(unsigned char *)malloc(16);
-         for(i=0;i<16;i++){
-         iv[i]='i';
-         }
+         mbedtls_md5((const unsigned char *)key,32, iv );
          //encrypt the given array and put it in the array to be returned
          AES128_CBC_encrypt_buffer(outputEn,toEncrypt,numOfPass*2*PASSWORDLENGTH+16, (const unsigned char*)key,(const unsigned char *)iv);
          //not sure ? free the memory allocated to the arrays
@@ -95,9 +93,7 @@ bool PasswordManager::decrypt(unsigned char * input){
          unsigned char * toTransform=(unsigned char *)malloc(sizeOfInput-16);
          unsigned char toCheck[16];
          unsigned char * iv=(unsigned char *)malloc(16);
-         for(i=0;i<16;i++){
-         iv[i]='i';
-         }
+         mbedtls_md5((const unsigned char *)key,32, iv );
          //decrypt the givin array after the load from the memory
          AES128_CBC_decrypt_buffer(outputEn,input, numOfPass*2*PASSWORDLENGTH+16, (const unsigned char*)key,(const unsigned char *)iv);
          //divide the buffer after decrypt into checksum and array to be turned in the array of WPTuples if decryption correct
@@ -249,7 +245,7 @@ void PasswordManager::changePassword(char * website){
 }
 
 bool PasswordManager::changeMasterPassword(){
-     char * givenPassword;//variable to save the passwords given by  
+     char * givenPassword=(char *)malloc(32);;//variable to save the passwords given by  
      unsigned char hashedGiven[16];//variable to put the hash of the given password
      int i;
      printf("Insert your old password:\n");
