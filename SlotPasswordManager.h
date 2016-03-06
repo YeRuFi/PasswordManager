@@ -34,7 +34,7 @@
 #define ADDRESS1 0x080F8000 //the standard address in sector 11 at the very end of the flash
 #define ADDRESS2 0x080C0000 //first address of sector 10
 #define ADDRESS3 0x080A0000 //first address of sector 9
-#define ADDRESS4 0x08080000 //first address of sector 8
+#define ADDRESS4 0x08098000 //last address of sector 8 with 32KiB capacity, as far as possible from OS.
 
 #define HELP "The Password Manager provides 4 slots on the flash. So up to 4 users can store their passwords. You can enter a number (e.g. 4) to use the correspondent slot. Note that you should remember your slot number and always use the same, in order to see your passwords. \n" //help text will be shown when help command is typed
 
