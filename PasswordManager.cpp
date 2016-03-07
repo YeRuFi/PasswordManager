@@ -244,6 +244,26 @@ void PasswordManager::changePassword(char * website){
 
 }
 
+bool PasswordManager::changeMasterPassword(){
+     char * givenPassword;//variable to save the passwords given by  
+     unsigned char * hashedGiven;//variable to put the hash of the given password
+     int i;
+     printf("Insert your old password:\n");
+     scanf("%s");
+     mbedtls_md5((const unsigned char *)givenPassword,16, hashedGiven);
+     for(i=0;i<16;i++){
+        if(hashedGiven[i]!=key[i]){
+           printf("Wrong Password! \n");
+           return false;
+          }
+     }
+     printf("Insert new Password:\n");
+     scanf("%s",givenPassword);
+     createKey(givenPassword);
+     printf("Password changed successfully\n");
+     return true;
+     
+}
 
 
 
