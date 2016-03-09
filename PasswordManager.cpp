@@ -63,8 +63,8 @@ return output;
 unsigned char * PasswordManager::encrypt(){
          //transform the structers to be encrypted in an array
          char *inputEn=structToArray(passwords,numOfPass,PASSWORDLENGTH);
-         int sizeOfInput=sizeof(inputEn);
-         //create and allocate memory for an array to put the encryption
+         int sizeOfInput=numOfPass*2*PASSWORDLENGTH;
+          //create and allocate memory for an array to put the encryption
          unsigned char *outputEn=(unsigned char *)malloc(sizeOfInput+16);
          //calculate the hash of the input Array and put it in the checksum
          mbedtls_md5((const unsigned char *)inputEn,sizeOfInput, checksum );
@@ -77,7 +77,7 @@ unsigned char * PasswordManager::encrypt(){
          for(i=sizeOfInput;i<sizeOfInput+16;i++){
          toEncrypt[i]=checksum[i-sizeOfInput];
          }
-         unsigned char * iv;
+         unsigned char * iv=(unsigned char *)malloc(16);
          mbedtls_md5((const unsigned char *)key,32, iv );
          //encrypt the given array and put it in the array to be returned
          AES128_CBC_encrypt_buffer(outputEn,toEncrypt,numOfPass*2*PASSWORDLENGTH+16, (const unsigned char*)key,(const unsigned char *)iv);
@@ -88,11 +88,11 @@ unsigned char * PasswordManager::encrypt(){
 }
 bool PasswordManager::decrypt(unsigned char * input){
          int i;
-         int sizeOfInput=sizeof(input);
+         int sizeOfInput=numOfPass*2*PASSWORDLENGTH+16;
          unsigned char * outputEn=(unsigned char *)malloc(sizeOfInput);
          unsigned char * toTransform=(unsigned char *)malloc(sizeOfInput-16);
          unsigned char toCheck[16];
-         unsigned char * iv;
+         unsigned char * iv=(unsigned char *)malloc(16);
          mbedtls_md5((const unsigned char *)key,32, iv );
          //decrypt the givin array after the load from the memory
          AES128_CBC_decrypt_buffer(outputEn,input, numOfPass*2*PASSWORDLENGTH+16, (const unsigned char*)key,(const unsigned char *)iv);
@@ -115,15 +115,14 @@ bool PasswordManager::decrypt(unsigned char * input){
           return false; 
           }
          }
-         passwords=(WPTuple *)malloc(sizeof(WPTuple)*numOfPass);
          //password is correct so initialize the structure
          passwords=arrayToStruct((char *)toTransform,numOfPass,PASSWORDLENGTH);
          
          return true;         
 }
 void PasswordManager::createKey(char * password){
-         unsigned char * hashedToTransform;
-         mbedtls_md5((const unsigned char *)password,16, hashedToTransform );
+         unsigned char hashedToTransform[16];
+         mbedtls_md5((const unsigned char *)addCharacters(password),32, hashedToTransform );
          int i;
          //create key
          for(i=0;i<16;i++){
@@ -148,13 +147,14 @@ bool PasswordManager::cmpChar(char one[32],char two[32]){
 char * PasswordManager::addCharacters(char * input){
          char * output=(char *) malloc(32*sizeof(char));
          int i;
-         int size=sizeof(input);
+         int size=(int)strlen(input);
          for(i=0;i<size;i++){
          output[i]=input[i];
          }
          for(i=size;i<32;i++){
          output[i]='.';
          }   
+         return output;
 }
 void PasswordManager::addPassword(char * website,char * password){
          char * web=addCharacters(website);
@@ -236,7 +236,7 @@ void PasswordManager::changePassword(char * website){
      }else{
      char newPass[32];
      printf("Please instert the new password for + %s \n",website);
-     scanf("%32s",newPass);
+     scanf("%s",newPass);
      strcpy(passwords[i].password,addCharacters(newPass));
      changed=true;
      printf("Password changed\n");
@@ -245,12 +245,12 @@ void PasswordManager::changePassword(char * website){
 }
 
 bool PasswordManager::changeMasterPassword(){
-     char * givenPassword;//variable to save the passwords given by  
-     unsigned char * hashedGiven;//variable to put the hash of the given password
+     char * givenPassword=(char *)malloc(32);;//variable to save the passwords given by  
+     unsigned char hashedGiven[16];//variable to put the hash of the given password
      int i;
      printf("Insert your old password:\n");
-     scanf("%s");
-     mbedtls_md5((const unsigned char *)givenPassword,16, hashedGiven);
+     scanf("%s",givenPassword);
+     mbedtls_md5((const unsigned char *)addCharacters(givenPassword),32, hashedGiven);
      for(i=0;i<16;i++){
         if(hashedGiven[i]!=key[i]){
            printf("Wrong Password! \n");
