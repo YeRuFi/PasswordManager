@@ -18,7 +18,7 @@ void writeTest()
 		printf("Not Succesful\n");
 	memDump((char *) 0x080F8000, 9);
 	memDump((char *) 0x080F8030, 10);
-	memDump((char *) 0x080F8230, 5);
+	memDump((char *) 0x080F8038, 10);
 }
 
 int main()
