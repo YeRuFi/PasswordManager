@@ -129,10 +129,9 @@ private:
 	bool remove(char * website);
 
 	/**
-	  * Encrypts the attributes (data), will be saved in the attributes
-          * \return An encryted array of the data that the structure has
+	  * Encrypts the data and puts the encrypted date in the encryptedData char *
    	  */	
-	unsigned char* encrypt();
+	void encrypt();
 
 	/**
 	  * Decrypts the attributes (data)

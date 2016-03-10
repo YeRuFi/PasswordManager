@@ -60,12 +60,10 @@ WPTuple* PasswordManager::arrayToStruct(char * input,int numOfPasswords,int leng
 return output;
 
 }
-unsigned char * PasswordManager::encrypt(){
+void     PasswordManager::encrypt(){
          //transform the structers to be encrypted in an array
          char *inputEn=structToArray(passwords,numOfPass,PASSWORDLENGTH);
          int sizeOfInput=numOfPass*2*PASSWORDLENGTH;
-          //create and allocate memory for an array to put the encryption
-         unsigned char *outputEn=(unsigned char *)malloc(sizeOfInput+16);
          //calculate the hash of the input Array and put it in the checksum
          mbedtls_md5((const unsigned char *)inputEn,sizeOfInput, checksum );
          //add the checksum in the array to be encrypted
@@ -80,11 +78,10 @@ unsigned char * PasswordManager::encrypt(){
          unsigned char * iv=(unsigned char *)malloc(16);
          mbedtls_md5((const unsigned char *)key,32, iv );
          //encrypt the given array and put it in the array to be returned
-         AES128_CBC_encrypt_buffer(outputEn,toEncrypt,numOfPass*2*PASSWORDLENGTH+16, (const unsigned char*)key,(const unsigned char *)iv);
+         AES128_CBC_encrypt_buffer(encryptedData,toEncrypt,numOfPass*2*PASSWORDLENGTH+16, (const unsigned char*)key,(const unsigned char *)iv);
          //not sure ? free the memory allocated to the arrays
          free(toEncrypt);
-         free(inputEn);
-         return outputEn;         
+         free(inputEn);        
 }
 bool PasswordManager::decrypt(unsigned char * input){
          int i;
@@ -152,7 +149,7 @@ char * PasswordManager::addCharacters(char * input){
          output[i]=input[i];
          }
          for(i=size;i<32;i++){
-         output[i]='.';
+         output[i]=(char)255;
          }   
          return output;
 }
@@ -168,8 +165,8 @@ void PasswordManager::addPassword(char * website,char * password){
 char * PasswordManager::transformArray(char input[32]){
          int size,i;
          size=0;
-         for(i=0;i<31;i++){
-            if(input[i]=='.'&&input[i+1]=='.'){
+         for(i=0;i<32;i++){
+            if(input[i]==(char)255){
                break;
             }
          size++;
