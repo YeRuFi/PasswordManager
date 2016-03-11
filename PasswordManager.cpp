@@ -139,17 +139,17 @@ bool PasswordManager::cmpChar(char one[32],char two[32]){
 }
 
 
-
+//the return value must be freed every time 
 char * PasswordManager::addCharacters(char * input){
          char * output=(char *) malloc(32*sizeof(char));
          int i;
          int size=(int)strlen(input);
-         for(i=0;i<size;i++){
+         for(i=0;i<size+1;i++){
          output[i]=input[i];
          }
-         for(i=size;i<32;i++){
+         for(i=size+1;i<32;i++){
          output[i]=(char)255;
-         }   
+         }  
          return output;
 }
 void PasswordManager::addPassword(char * website,char * password){
@@ -157,10 +157,12 @@ void PasswordManager::addPassword(char * website,char * password){
          char * pass=addCharacters(password);
          strcpy(passwords[numOfPass].website,web);
          strcpy(passwords[numOfPass].password,pass);
+         free(web);
+         free(pass);
          numOfPass++;
          changed=true;
 }
-
+//the return must be freed 
 char * PasswordManager::transformArray(char input[32]){
          int size,i;
          size=0;
@@ -179,9 +181,14 @@ char * PasswordManager::transformArray(char input[32]){
 void PasswordManager::printAll(){
          int i;
          for(i=0;i<numOfPass;i++){
-         printf("Website: %s \n",transformArray(passwords[i].website));
-         printf("Password: %s \n",transformArray(passwords[i].password));
+         char* website=transformArray(passwords[i].website);
+         printf("Website: %s \n", website);
+         free(website);
+         char* pass=transformArray(passwords[i].password);
+         printf("Password: %s \n",pass);
+         free(pass);
          }
+
 }
 bool PasswordManager::searchPassword(char * website){
          char * toSearch=addCharacters(website);
@@ -189,14 +196,17 @@ bool PasswordManager::searchPassword(char * website){
          if(i!=-1){
             printf("Website: %s \n",website);
             printf("Password:%s \n",transformArray(passwords[i].password));
+            free(toSearch);
             return true;
             }
+         free(toSearch);
          return false;
 }
 bool PasswordManager::remove(char * website){
          char * toSearch=addCharacters(website);
          int i;
          int toRemove=getPosition(website);
+         free(toSearch);
          if(toRemove==-1){
          return false;
          }else{
@@ -221,6 +231,7 @@ int PasswordManager::getPosition(char * input){
             position=i;
             }
          }
+         free(toSearch);
          return position;
 
 }
@@ -233,7 +244,9 @@ void PasswordManager::changePassword(char * website){
      char newPass[32];
      printf("Please instert the new password for + %s \n",website);
      scanf("%s",newPass);
-     strcpy(passwords[i].password,addCharacters(newPass));
+     char* pass=addCharacters(newPass);
+     strcpy(passwords[i].password,pass);
+     free(pass);
      changed=true;
      printf("Password changed\n");
      }
@@ -246,10 +259,12 @@ bool PasswordManager::changeMasterPassword(){
      int i;
      printf("Insert your old password:\n");
      scanf("%s",givenPassword);
-     mbedtls_md5((const unsigned char *)addCharacters(givenPassword),32, hashedGiven);
+     char * pass=addCharacters(givenPassword);
+     mbedtls_md5((const unsigned char *)pass,32, hashedGiven);
      for(i=0;i<16;i++){
         if(hashedGiven[i]!=key[i]){
            printf("Wrong Password! \n");
+           free(pass);
            return false;
           }
      }
@@ -257,6 +272,7 @@ bool PasswordManager::changeMasterPassword(){
      scanf("%s",givenPassword);
      createKey(givenPassword);
      printf("Password changed successfully\n");
+     free(pass);
      return true;
      
 }
