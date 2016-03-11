@@ -30,9 +30,10 @@
 #ifndef PASSWORDMANAGER_H
 #define	PASSWORDMANAGER_H
 
-#define PASSWORDLENGTH 32 //the maximum number of bytes for each password or website
+
+#define PASSWORDLENGTH 32 //the maximum number of bytes for each password also website
 #define MAXSTORED 510 //the maximum number of passwords that can be stored
-#define STANDARD_ADDRESS 0x080F8000 //the standard address in sector 11 as far from os as possible 
+#define STANDARD_ADDRESS 0x080F8000 //the standard address in sector 11 
 
 #include <FlashDriver.h>
 #include <string>
@@ -43,6 +44,7 @@ using namespace std;
 struct WPTuple {
 	char website[PASSWORDLENGTH];
 	char password[PASSWORDLENGTH];
+
 };
 
 
@@ -64,13 +66,12 @@ public:
    	  */
    	PasswordManager();
         /**
-          * Constructor whcih allows to start the pm with different address
-	  * For instance it can be used for multi user support
-          *\param address in flash to put data, 32KiB necessary in 1 sector, only 1 password manager/sector is supported
+          * Constructor to be used in case of multi user
+          *\param address of the flash where the data starts ,it should be one for a sector and there should be 32kib of memory 
           */
         PasswordManager(unsigned int address);
  
-private:
+private: 
     
 
 	/**
@@ -78,7 +79,9 @@ private:
   	  */ 
 	bool changed; // true when commit is necessary (flash write)
 	unsigned char key[32];// a variable to save the key to encrypt the data
-        unsigned int address; //address of passwords in Flash (constant 0xF8000); better with DEFINE?
+
+        //start address to store data on flash:
+	unsigned int address; //there must be 32 KiB space (on one single sector)
         bool firstUse;//true if there is no data in the flash ,master password has to be set
         
         /**
@@ -195,6 +198,7 @@ private:
           *\return bool false if the old password is different from the given one at first
           */
         bool changeMasterPassword();
+
       
 };
 
