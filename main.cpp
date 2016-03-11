@@ -2,7 +2,6 @@
 #include <PasswordManager.h>
 #include <string>
 #include <stdio.h>
-
 using namespace miosix;
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!all functions and attributes are public for testing!!!!!!!!!
 void writeTest()
@@ -88,12 +87,34 @@ void writeReadTest()
 	memDump((char *) 0x080F8000, 140);
 	
 }
+//test after merging encryption with flash
+void test(){
+PasswordManager *pwm = new PasswordManager();
+pwm->addPassword("google","123");
+pwm->addPassword("amazon","secondPass");
+char password[32];
+pwm->printAll();
+printf("Put the password:\n");
+scanf("%s",password);
+pwm->createKey(password);
+pwm->encrypt();
+pwm->storeData();
+
+if(!pwm->storeData())
+		printf("Error while storing\n");
+	printf("Flash content:\n");	
+	memDump((char *) 0x080F8000, 140);
+pwm->loadData();
+pwm->decrypt(pwm->encryptedData);
+pwm->printAll();
+}
 
 
 int main()
 {
-	writeReadTest(); //call test function
-	printf("Does it work?"); //works with scanf at the end
-	char p;	
-	scanf("%c",&p);			
+	//writeReadTest(); //call test function
+	//printf("Does it work?"); //works with scanf at the end
+	//char p;	
+	//scanf("%c",&p);
+        test();			
 }
