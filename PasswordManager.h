@@ -67,7 +67,7 @@ public:
    	PasswordManager();
         /**
           * Constructor to be used in case of multi user
-          *\param address of the flash where the data starts ,it should be one for a sector and there should be 32kib of memory 
+          *\param address of the flash where the data starts, it should be one for a sector and there should be 32kib of memory 
           */
         PasswordManager(unsigned int address);
  
@@ -82,7 +82,7 @@ private:
 
         //start address to store data on flash:
 	unsigned int address; //there must be 32 KiB space (on one single sector)
-        bool firstUse;//true if there is no data in the flash ,master password has to be set
+        bool firstUse; //true if there is no data in the flash, master password has to be set
         
         /**
 	  * Attributes to be encrypted
@@ -97,19 +97,22 @@ private:
 	short numOfPass; // number of currently stored passwords
 	
 	/**
-   	  * Initializes passwords[], checksum, numOfPass by loading them from the Flash (load previous stored passwords)
+   	  * loads encrypted data from the Flash (previous stored passwords)
+	  * puts the loaded data as content of the char[] encryptedData points to
+	  * the function will set the attributes firstUse and numOfPass accordingly
    	  */	
 	void loadData();
 
 	/**
-   	  * Writes data to the flash (Commit), only necessary when changed true and user wants to commit
-	  * \return true no write errors
+   	  * Writes data to the flash (commit)
+	  * only necessary when changed is true and user wants to commit
+	  * \return true no errors occured while erasing or writing 
    	  */	
 	bool storeData();
 	
 	/**
-          * searches for a given website if it is in the array of WTPuples prints it if exists
-	  * \param website to be searched for
+          * searches for a given website; if it is in the array of WTPuples it is printed
+	  * \param exact website name to be searched for
 	  * \return true if the website is in the array of data structures 
    	  */	
 	bool searchPassword(char * website);
@@ -126,22 +129,24 @@ private:
 	void addPassword(char * website, char * password);
 
 	/**
-	  * \param website to be removed (including password)
+	  * \param website of the tuple to be removed (including password)
 	  * \return true: succesful removed
    	  */	
 	bool remove(char * website);
 
 	/**
-	  * Encrypts the data and puts the encrypted date in the encryptedData char *
+	  * Encrypts the data and puts the encrypted data at encryptedData char*
    	  */	
 	void encrypt();
 
 	/**
 	  * Decrypts the attributes (data)
+	  * \param data to be decrypted
    	  * \return true: password correct
    	  */		
 	bool decrypt(unsigned char * input);
-        /**
+        
+	/**
           *Transforms the array of WPTuples into a single array of characters to be used for encryption and decryption
           *\param input[] the array of structures
           *\param numOfPasswords the number of passwords saved in the array
@@ -149,7 +154,8 @@ private:
           *\return the wanted array
           */
         char * structToArray(WPTuple input[],int numOfPasswords,int lengthOfWebsite);  
-        /**
+        
+	/**
           *Transforms a given array of characters into an array of WPTuples to be used for adding removing passwords
           *\param input[] the array to transform
           *\param numOfPasswords the number of passwords saved in the array
@@ -157,41 +163,49 @@ private:
           *\return the wanted array of WPTuples
           */
         WPTuple * arrayToStruct(char * input,int numOfPasswords,int lengthOfWebsite); 
-        /**
+        
+	/**
           *Creates the key to encrypt and decrypt data from the password that the user is going to put
           *\param password the password that the user puts
           */
         void createKey(char * password);
-        /**
-          *Compares two array of 32 bytes 
+        
+	/**
+          *Compares two arrays of 32 bytes 
           *\param one first array to compare
           *\param two second array to compare
           *\return true if the two arrays contain the same chars
           */
         bool cmpChar(char * one,char * two);
-        /**
+        
+	/**
           *add . to make an array into a 32 bytes array
           *\param array to add points
           *\return the char array
           */
         char * addCharacters(char * input);
-        /**
+        
+	/**
           *Get the characters to print from an array of 32 bytes 
           *\param input the array to be transformed
           *\return string 
           */
         char * transformArray(char input[32]);  
-        /**
-          *
+        
+	/**
+          * searches for the given website and allows to change the password for it
+	  * \param exact webste name for which the password should be changed
           */
         void changePassword(char * website);
-        /**
+        
+	/**
           *gets the position of an website in the passwords array
           *\param input the array of which we want to find the position
           *\return int the position of the array -1 if not found
           */
         int getPosition(char * input);
-        /**
+        
+	/**
           *Function to change the master password , it first asks for the old password if that is incorrect prints wrong password and then returns   
           *false
           * if password correct gives you the oportunity to put the new password and generates the new key
