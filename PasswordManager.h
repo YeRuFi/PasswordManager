@@ -61,50 +61,78 @@ public:
    	 void startUI();
     
 	/**
-   	  * Constructor
-   	  * 
+   	  * Constructor \n
+   	  * initializes the Password Manager by allocating memory
    	  */
    	PasswordManager();
-        /**
+        
+	/**
           * Constructor to be used in case of multi user
-          *\param address of the flash where the data starts, it should be one for a sector and there should be 32kib of memory 
+          *\param address flash address where the data starts, it should be one for a sector and there should be 32kib of memory 
           */
         PasswordManager(unsigned int address);
  
 private: 
     
 
+// General Attributes
 	/**
-	  * Attributes
+	  * true when commit is necessary (flash write)
   	  */ 
-	bool changed; // true when commit is necessary (flash write)
-	unsigned char key[32];// a variable to save the key to encrypt the data
+	bool changed; 
 
-        //start address to store data on flash:
-	unsigned int address; //there must be 32 KiB space (on one single sector)
-        bool firstUse; //true if there is no data in the flash, master password has to be set
+	/**
+	  * a variable to save the key to encrypt the data
+  	  */ 	
+	unsigned char key[32];
+
+	/**
+	  * start address to store data on flash \n
+	  * there must be 32 KiB space (on one single sector)
+  	  */ 
+	unsigned int address;
         
-        /**
-	  * Attributes to be encrypted
+	/**
+	  * true if there is no data in the flash, master password has to be set
+  	  */ 
+	bool firstUse; 
+        
+
+// Attributes to be encrypted
+	/**
+	  * 
   	  */
-    	WPTuple *passwords; //pointer?
-	unsigned char checksum[16]; // hash of passwords array
-	
- 	/**
-          *Attributes stored on the flash
-          */
-        unsigned char * encryptedData; //to put the encrypted data after load from flash
-	short numOfPass; // number of currently stored passwords
+    	WPTuple *passwords; 
 	
 	/**
-   	  * loads encrypted data from the Flash (previous stored passwords)
-	  * puts the loaded data as content of the char[] encryptedData points to
-	  * the function will set the attributes firstUse and numOfPass accordingly
+	  * hash of passwords array
+  	  */
+	unsigned char checksum[16];
+	
+
+// Attributes stored on the flash
+ 	/**
+          * to put the encrypted data after load from flash
+          */
+        unsigned char * encryptedData;
+	
+	/**
+          * number of currently stored passwords
+          */	
+	short numOfPass;
+	
+	
+// Methods
+	
+	/**
+   	  * loads encrypted data from the Flash (previous stored passwords) \n
+	  * puts the loaded data as content of the char[] encryptedData points to \n
+	  * the function will set the attributes firstUse and numOfPass accordingly \n
    	  */	
 	void loadData();
 
 	/**
-   	  * Writes data to the flash (commit)
+   	  * Writes data to the flash (commit) \n
 	  * only necessary when changed is true and user wants to commit
 	  * \return true no errors occured while erasing or writing 
    	  */	
@@ -112,7 +140,7 @@ private:
 	
 	/**
           * searches for a given website; if it is in the array of WTPuples it is printed
-	  * \param exact website name to be searched for
+	  * \param website exact website name to be searched for
 	  * \return true if the website is in the array of data structures 
    	  */	
 	bool searchPassword(char * website);
@@ -123,13 +151,13 @@ private:
 	void printAll();
 	
 	/**
-	  * \param website to add 
-          * \param password to add
+	  * \param website to be added 
+          * \param password to be added as password of the named website
    	  */	
 	void addPassword(char * website, char * password);
 
 	/**
-	  * \param website of the tuple to be removed (including password)
+	  * \param website website name of the tuple to be removed (including password)
 	  * \return true: succesful removed
    	  */	
 	bool remove(char * website);
@@ -141,7 +169,7 @@ private:
 
 	/**
 	  * Decrypts the attributes (data)
-	  * \param data to be decrypted
+	  * \param input data to be decrypted
    	  * \return true: password correct
    	  */		
 	bool decrypt(unsigned char * input);
@@ -150,7 +178,7 @@ private:
           *Transforms the array of WPTuples into a single array of characters to be used for encryption and decryption
           *\param input[] the array of structures
           *\param numOfPasswords the number of passwords saved in the array
-          *\param the length of the website and password array in the struct
+          *\param lengthOfWebsite the length of the website and password array in the struct
           *\return the wanted array
           */
         char * structToArray(WPTuple input[],int numOfPasswords,int lengthOfWebsite);  
@@ -159,7 +187,7 @@ private:
           *Transforms a given array of characters into an array of WPTuples to be used for adding removing passwords
           *\param input[] the array to transform
           *\param numOfPasswords the number of passwords saved in the array
-          *\param the length of the website and password array 
+          *\param lengthOfWebsite the length of the website and password array 
           *\return the wanted array of WPTuples
           */
         WPTuple * arrayToStruct(char * input,int numOfPasswords,int lengthOfWebsite); 
@@ -180,7 +208,7 @@ private:
         
 	/**
           *add . to make an array into a 32 bytes array
-          *\param array to add points
+          *\param input array to add points
           *\return the char array
           */
         char * addCharacters(char * input);
@@ -194,14 +222,14 @@ private:
         
 	/**
           * searches for the given website and allows to change the password for it
-	  * \param exact webste name for which the password should be changed
+	  * \param website exact website name for which the password should be changed
           */
         void changePassword(char * website);
         
 	/**
           *gets the position of an website in the passwords array
           *\param input the array of which we want to find the position
-          *\return int the position of the array -1 if not found
+          *\return the position of the array -1 if not found
           */
         int getPosition(char * input);
         
