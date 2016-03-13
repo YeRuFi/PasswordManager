@@ -77,7 +77,6 @@ void PasswordManager::startUI()
         else if(input[0]=='m') //change master password
         {
             changed=true;
-            //firstUse=true;
             //check old master password? -> implemented in function
             changeMasterPassword()
         }
@@ -102,7 +101,9 @@ void PasswordManager::startUI()
             {
                 if(firstUse)
                 {
-                    //set master password
+                    printf("Write your password with which you want to encrypt the data:\n");
+                    scanf("%s",input);
+                    createKey(input);
                 }
                 encrypt();
                 if(storeData())
