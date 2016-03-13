@@ -15,50 +15,164 @@ changed(false),
 numOfPass(0),
 address(STANDARD_ADDRESS)
 {
-        encryptedData=new unsigned char[MAXSTORED*2*PASSWORDLENGTH+16];//website length is the same as PASSWORDLENGTH ,16 for checksum
-        passwords=new WPTuple[MAXSTORED];
+    encryptedData=new unsigned char[MAXSTORED*2*PASSWORDLENGTH+16];//website length is the same as PASSWORDLENGTH ,16 for checksum
+    passwords=new WPTuple[MAXSTORED];
+    
+}
 
+void PasswordManager::startUI()
+{
+    //initialization of password manager
+    
+    printf("\nWelcome to the Password Manager!\n");
+    
+    loadData();
+    
+    char* input = new char[PASSWORDLENGTH];
+    if(firstUse==false)
+    {
+    checkpass:
+        printf("Please enter the master password: \n");
+        system("stty -echo"); //supported in miosix??
+        scanf("%s",input); //should not print password on screen!
+        system("stty echo");
+        createKey(input);
+        if(!decrypt(encryptedData))
+        {
+            printf("Wrong Password!");
+            goto checkpass;
+        }
+        strcpy(input, "..... ..... ..... ..... ..... ."); //erase masterpassword
+    }
+    do
+    {
+        printf("Please enter a command or type help: \n");
+        scanf("%s",input);
+        if(input[0]=='h') //help
+        {
+            //printf(HELP);
+            printf("\n");
+        }
+        else if(input[0]=='a') //add
+        {
+            char * website = new char [PASSWORDLENGTH];
+            printf("Adding new entry:\n");
+            printf("website name: \n");
+            scanf("%s",website);
+            printf("password: \n");
+            scanf("%s",input);
+            addPassword(website, input);
+            delete[] website;
+        }
+        else if(input[0]=='s') //search
+        {
+            scanf("%s",input);
+            if(!searchPassword(input))
+                printf("Not found, try again or printAll");
+        }
+        else if(input[0]=='p') //printAll
+        {
+            printAll();
+        }
+        else if(input[0]=='m') //change master password
+        {
+            changed=true;
+            //check old master password? -> implemented in function
+            changeMasterPassword()
+        }
+        else if(input[0]=='w') //change website password
+        {
+            printf("For which website should the password be changed? \n");
+            scanf("%s",input);
+            changePassword(input);
+        }
+        else if(input[0]=='r') //remove
+        {
+            printf("Which website should be removed? \n");
+            scanf("%s",input);
+            if(!remove(input))
+            {
+                printf("Could not remove. Please check website name.\n");
+            }
+        }
+        else if(input[0]=='c') //commit
+        {
+            if(changed)
+            {
+                if(firstUse)
+                {
+                    printf("Write your password with which you want to encrypt the data:\n");
+                    scanf("%s",input);
+                    createKey(input);
+                }
+                encrypt();
+                if(storeData())
+                    changed=false;
+                else
+                    printf("Error while storing the data on the flash");
+            }
+        }
+        else if(input[0]!='e'||input[0]!='q') //exit or quit
+        {
+            if (changed)
+            {
+                printf("There is data that has not been saved. Do you really want to quit? Type yes (to discard all changes) or no. \n");
+                scanf("%s",input);
+                if(input[0]=='y')
+                    break;
+            }
+            else
+            {
+                break;
+            }
+        }
+        else
+            printf("Invalid input... \n");
+    } while(true);
+    delete[] input;
 }
 
 char * PasswordManager::structToArray(WPTuple input[],int numOfPasswords,int lengthOfWebsite){
-	int i,j,z;
-	char *output;
-	output=(char *)malloc(sizeof(char)*numOfPasswords*2*lengthOfWebsite);
-	z=0;
-	for(i=0;i<numOfPasswords;i++){
-	    for(j=0;j<lengthOfWebsite;j++)
-		{
-		  output[z]=input[i].website[j];
-		  z++;
-		}
-	    for(j=0;j<lengthOfWebsite;j++)
-	        {
-		  output[z]=input[i].password[j];
-		  z++;
-	        }
-     }
-return output;
+    int i,j,z;
+    char *output;
+    output=(char *)malloc(sizeof(char)*numOfPasswords*2*lengthOfWebsite);
+    z=0;
+    for(i=0;i<numOfPasswords;i++){
+        for(j=0;j<lengthOfWebsite;j++)
+        {
+            output[z]=input[i].website[j];
+            z++;
+        }
+        for(j=0;j<lengthOfWebsite;j++)
+        {
+            output[z]=input[i].password[j];
+            z++;
+        }
+    }
+    return output;
 }
-WPTuple* PasswordManager::arrayToStruct(char * input,int numOfPasswords,int lengthOfWebsite){
-        int i,j,z;
-	WPTuple *output;
-	output=(WPTuple *)malloc(sizeof(char)*numOfPasswords*2*lengthOfWebsite);
-	z=0;
-          for(i=0;i<numOfPasswords;i++){
-	    for(j=0;j<lengthOfWebsite;j++)
-		{
-		  output[i].website[j]=input[z];
-	          z++;
-		}
-	    for(j=0;j<lengthOfWebsite;j++)
-	        {
-		  output[i].password[j]=input[z];
-		  z++;
-	        }
-     }
-return output;
 
+WPTuple* PasswordManager::arrayToStruct(char * input,int numOfPasswords,int lengthOfWebsite){
+    int i,j,z;
+    WPTuple *output;
+    output=(WPTuple *)malloc(sizeof(char)*numOfPasswords*2*lengthOfWebsite);
+    z=0;
+    for(i=0;i<numOfPasswords;i++){
+        for(j=0;j<lengthOfWebsite;j++)
+        {
+            output[i].website[j]=input[z];
+            z++;
+        }
+        for(j=0;j<lengthOfWebsite;j++)
+        {
+            output[i].password[j]=input[z];
+            z++;
+        }
+    }
+    return output;
+    
 }
+
 void     PasswordManager::encrypt(){
          //transform the structers to be encrypted in an array
          char *inputEn=structToArray(passwords,numOfPass,PASSWORDLENGTH);
@@ -127,17 +241,17 @@ void PasswordManager::createKey(char * password){
          for(i=0;i<16;i++){
             key[i+16]=hashedToTransform[i];
          }      
+
 }
 bool PasswordManager::cmpChar(char one[32],char two[32]){
-        int i;
-        for(i=0;i<32;i++){
-           if(one[i]!=two[i]){
-             return false;
-           }
+    int i;
+    for(i=0;i<32;i++){
+        if(one[i]!=two[i]){
+            return false;
         }
-        return true;
+    }
+    return true;
 }
-
 
 //the return value must be freed every time 
 char * PasswordManager::addCharacters(char * input){
@@ -152,6 +266,7 @@ char * PasswordManager::addCharacters(char * input){
          }  
          return output;
 }
+
 void PasswordManager::addPassword(char * website,char * password){
          char * web=addCharacters(website);
          char * pass=addCharacters(password);
@@ -162,6 +277,7 @@ void PasswordManager::addPassword(char * website,char * password){
          numOfPass++;
          changed=true;
 }
+
 //the return must be freed 
 char * PasswordManager::transformArray(char input[32]){
          int size,i;
@@ -178,6 +294,7 @@ char * PasswordManager::transformArray(char input[32]){
          }
          return output;
 }
+
 void PasswordManager::printAll(){
          int i;
          for(i=0;i<numOfPass;i++){
@@ -190,6 +307,7 @@ void PasswordManager::printAll(){
          }
 
 }
+
 bool PasswordManager::searchPassword(char * website){
          char * toSearch=addCharacters(website);
          int i=getPosition(website);
@@ -202,6 +320,7 @@ bool PasswordManager::searchPassword(char * website){
          free(toSearch);
          return false;
 }
+
 bool PasswordManager::remove(char * website){
          char * toSearch=addCharacters(website);
          int i;
@@ -222,12 +341,13 @@ bool PasswordManager::remove(char * website){
          return true;
          }
 }
+
 int PasswordManager::getPosition(char * input){
-         char * toSearch=addCharacters(input);
-         int i;
-         int position=-1;
-         for(i=0;i<numOfPass;i++){
-            if(cmpChar(passwords[i].website,toSearch)){
+    char * toSearch=addCharacters(input);
+    int i;
+    int position=-1;
+    for(i=0;i<numOfPass;i++){
+        if(cmpChar(passwords[i].website,toSearch)){
             position=i;
             }
          }
@@ -250,7 +370,6 @@ void PasswordManager::changePassword(char * website){
      changed=true;
      printf("Password changed\n");
      }
-
 }
 
 bool PasswordManager::changeMasterPassword(){
