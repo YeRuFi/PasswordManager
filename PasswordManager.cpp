@@ -281,18 +281,18 @@ bool PasswordManager::changeMasterPassword(){
  * Flash Layout for store and load Data functions
  * standard start address is used as example:
  *
- * Address 	Content 	Comment
- * 0x080F8000	'P'		Identification
- * 0x080F8001	'W'		"
- * 0x080F8002	'M'		"
- * 0x080F8003	0x00		"
- * 0x080F8004	numOfPass	short
- * 0x080F8006	passwords 	encryptedData
- * 0x080F8007	"		"
- * ...		...		...
- * 0x080F8006+numOfPass*64 +16 //64 for every password, 16 for the checksum
- * Afterwards	0xFF		"
- * ...		...		... //empty area reserved for new passwords
+ * Address 	Content 	Comment						\n
+ * 0x080F8000	'P'		Identification					\n
+ * 0x080F8001	'W'		"						\n
+ * 0x080F8002	'M'		"						\n
+ * 0x080F8003	0x00		"						\n
+ * 0x080F8004	numOfPass	short						\n
+ * 0x080F8006	passwords 	encryptedData					\n
+ * 0x080F8007	"		"						\n
+ * ...		...		...						\n
+ * 0x080F8006+numOfPass*64 +16 //64 for every password, 16 for the checksum	\n
+ * Afterwards	0xFF		"						\n
+ * ...		...		... //empty area reserved for new passwords	\n
  * 0x080FFFFF	0xFF		"
  *
  */
