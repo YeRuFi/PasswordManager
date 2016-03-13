@@ -17,14 +17,14 @@ SUBDIRS := $(KPATH)
 ## List here your source files (both .s, .c and .cpp)
 ##
 SRC :=                                  \
-main.cpp FlashDriver.cpp PasswordManager.cpp aes.c md5.c
+main.cpp FlashDriver.cpp PasswordManager.cpp 
 
 ##added button
 
 ##
 ## List here additional static libraries with relative path
 ##
-LIBS :=
+LIBS := aes.c md5.c
 
 ##
 ## List here additional include directories (in the form -Iinclude_dir)
