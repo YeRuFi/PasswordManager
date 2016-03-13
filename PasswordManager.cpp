@@ -39,7 +39,7 @@ void PasswordManager::startUI()
         createKey(input);
         if(!decrypt(encryptedData))
         {
-            printf("Wrong Password!");
+            printf("Wrong Password! \n");
             goto checkpass;
         }
         strcpy(input, "..... ..... ..... ..... ..... ."); //erase masterpassword
@@ -66,9 +66,10 @@ void PasswordManager::startUI()
         }
         else if(input[0]=='s') //search
         {
-            scanf("%s",input);
+            printf("Please enter the website name for which you want to know the password: \n");
+	    scanf("%s",input);
             if(!searchPassword(input))
-                printf("Not found, try again or printAll");
+                printf("Not found, try again or printAll \n");
         }
         else if(input[0]=='p') //printAll
         {
@@ -78,7 +79,7 @@ void PasswordManager::startUI()
         {
             changed=true;
             //check old master password? -> implemented in function
-            changeMasterPassword()
+            changeMasterPassword();
         }
         else if(input[0]=='w') //change website password
         {
@@ -299,7 +300,7 @@ void PasswordManager::printAll(){
          int i;
          for(i=0;i<numOfPass;i++){
          char* website=transformArray(passwords[i].website);
-         printf("Website: %s \n", website);
+         printf("Website: %s ", website);
          free(website);
          char* pass=transformArray(passwords[i].password);
          printf("Password: %s \n",pass);
