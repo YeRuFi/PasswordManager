@@ -33,9 +33,9 @@ void PasswordManager::startUI()
     {
     checkpass:
         printf("Please enter the master password: \n");
-        system("stty -echo"); //supported in miosix??
+        //system("stty -echo"); //supported in miosix??
         scanf("%s",input); //should not print password on screen!
-        system("stty echo");
+        //system("stty echo");
         createKey(input);
         if(!decrypt(encryptedData))
         {
@@ -113,7 +113,7 @@ void PasswordManager::startUI()
                     printf("Error while storing the data on the flash");
             }
         }
-        else if(input[0]!='e'||input[0]!='q') //exit or quit
+        else if(input[0]=='e'||input[0]=='q') //exit or quit
         {
             if (changed)
             {
@@ -246,7 +246,7 @@ void PasswordManager::createKey(char * password){
 }
 bool PasswordManager::cmpChar(char one[32],char two[32]){
     int i;
-    for(i=0;i<32;i++){
+    for(i=0;i<31;i++){
         if(one[i]!=two[i]){
             return false;
         }
@@ -310,36 +310,33 @@ void PasswordManager::printAll(){
 }
 
 bool PasswordManager::searchPassword(char * website){
-         char * toSearch=addCharacters(website);
          int i=getPosition(website);
          if(i!=-1){
-            printf("Website: %s \n",website);
-            printf("Password:%s \n",transformArray(passwords[i].password));
-            free(toSearch);
+            printf("Website: %s \n",transformArray(passwords[i].website));
+            printf("Password: %s \n",transformArray(passwords[i].password));
             return true;
-            }
-         free(toSearch);
+         }
          return false;
 }
 
 bool PasswordManager::remove(char * website){
-         char * toSearch=addCharacters(website);
          int i;
          int toRemove=getPosition(website);
-         free(toSearch);
          if(toRemove==-1){
-         return false;
-         }else{
-         if(numOfPass==1){
-         numOfPass--;
-         changed=true;
-         return true;
+         	return false;
          }
-         strcpy(passwords[toRemove].website,passwords[numOfPass-1].website);
-         strcpy(passwords[toRemove].password,passwords[numOfPass-1].password);
-         numOfPass--;
-         changed=true;
-         return true;
+	 else{
+         	if(numOfPass==1)
+		{
+         		numOfPass--;
+         		changed=true;
+         		return true;
+        	}
+         	memcpy((void*) passwords[toRemove].website, (void*) passwords[numOfPass-1].website, PASSWORDLENGTH);
+         	memcpy((void*) passwords[toRemove].password, (void*) passwords[numOfPass-1].password, PASSWORDLENGTH);
+         	numOfPass--;
+         	changed=true;
+         	return true;
          }
 }
 
@@ -348,13 +345,12 @@ int PasswordManager::getPosition(char * input){
     int i;
     int position=-1;
     for(i=0;i<numOfPass;i++){
-        if(cmpChar(passwords[i].website,toSearch)){
+        if(strcmp(passwords[i].website,toSearch)==0){ //cmpChar gives error
             position=i;
-            }
-         }
-         free(toSearch);
-         return position;
-
+        }
+    }
+    free(toSearch);
+    return position;
 }
 
 void PasswordManager::changePassword(char * website){
