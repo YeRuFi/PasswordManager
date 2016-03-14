@@ -74,10 +74,10 @@ void PasswordManager::startUI()
 		printf("printAll: 		print all websites and their passwords\n");
 		printf("masterPassword: 	change the master password to log in\n");
 		printf("websitePassword: 	change the password of an existing website\n");
-		printf("commit: 		store all data on the flash (do it at the end to protect the flash)\n");
+		printf("commit: 		store all data on the flash (preferably at the end)\n");
 		printf("quit: 			quits the program\n");
 		printf("exit: 			same as quit\n");
-		printf("delete: 		delete all your data and exit; frees the slot on the flash\n");
+		printf("delete: 		deletes all data and exits; frees slot on the flash\n");
         }
         else if(input[0]=='a') //add
         {
