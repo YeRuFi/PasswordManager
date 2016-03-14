@@ -17,7 +17,9 @@ SUBDIRS := $(KPATH)
 ## List here your source files (both .s, .c and .cpp)
 ##
 SRC :=                                  \
-main.cpp FlashDriver.cpp PasswordManager.cpp 
+
+main.cpp FlashDriver.cpp PasswordManager.cpp SlotPasswordManager.cpp
+
 
 ##added button
 

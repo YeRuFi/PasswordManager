@@ -1,7 +1,7 @@
 #include <miosix.h>
 #include <PasswordManager.h>
-#include <string>
 #include <stdio.h>
+#include <SlotPasswordManager.h>
 using namespace miosix;
 
 /*
@@ -114,11 +114,7 @@ pwm->printAll();
 
 int main()
 {
-	PasswordManager pwm;
-	pwm.startUI();
-	do{
-		char in [32]; 		
-		scanf("%s", in);
-		printf("%i", pwm.getPosition(in));
-	}while(true);	
+	SlotPasswordManager mupwm;
+	mupwm.startUI();
+	shutdown();
 }

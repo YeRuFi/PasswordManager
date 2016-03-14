@@ -71,8 +71,14 @@ public:
           *\param address flash address where the data starts, it should be one for a sector and there should be 32kib of memory 
           */
         PasswordManager(unsigned int address);
+
+	/**
+   	  * Destructor
+   	  * 
+   	  */
+   	~PasswordManager();
  
-/////private: 
+private: 
     
 
 // General Attributes
