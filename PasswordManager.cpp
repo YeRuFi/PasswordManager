@@ -196,22 +196,19 @@ char * PasswordManager::structToArray(WPTuple input[],int numOfPasswords,int len
 
 WPTuple* PasswordManager::arrayToStruct(char * input,int numOfPasswords,int lengthOfWebsite){
     int i,j,z;
-    WPTuple *output;
-    output=(WPTuple *)malloc(sizeof(char)*numOfPasswords*2*lengthOfWebsite);
     z=0;
     for(i=0;i<numOfPasswords;i++){
         for(j=0;j<lengthOfWebsite;j++)
         {
-            output[i].website[j]=input[z];
+            passwords[i].website[j]=input[z];
             z++;
         }
         for(j=0;j<lengthOfWebsite;j++)
         {
-            output[i].password[j]=input[z];
+            passwords[i].password[j]=input[z];
             z++;
         }
     }
-    return output;
     
 }
 
