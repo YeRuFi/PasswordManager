@@ -72,7 +72,7 @@ public:
           */
         PasswordManager(unsigned int address);
  
-private: 
+/////private: 
     
 
 // General Attributes
@@ -153,8 +153,9 @@ private:
 	/**
 	  * \param website to be added 
           * \param password to be added as password of the named website
+	  * \return true when there is space available, false when a number of MAXSTORED passwords are stored
    	  */	
-	void addPassword(char * website, char * password);
+	bool addPassword(char * website, char * password);
 
 	/**
 	  * \param website website name of the tuple to be removed (including password)

@@ -61,7 +61,8 @@ void PasswordManager::startUI()
             scanf("%s",website);
             printf("password: \n");
             scanf("%s",input);
-            addPassword(website, input);
+            if(!addPassword(website, input))
+		printf("No space available anymore, remove another password.\n");
             delete[] website;
         }
         else if(input[0]=='s') //search
@@ -268,15 +269,21 @@ char * PasswordManager::addCharacters(char * input){
          return output;
 }
 
-void PasswordManager::addPassword(char * website,char * password){
-         char * web=addCharacters(website);
-         char * pass=addCharacters(password);
-         strcpy(passwords[numOfPass].website,web);
-         strcpy(passwords[numOfPass].password,pass);
-         free(web);
-         free(pass);
-         numOfPass++;
-         changed=true;
+bool PasswordManager::addPassword(char * website,char * password){
+         if(numOfPass == MAXSTORED)
+		return false;
+	 else
+	{
+		 char * web=addCharacters(website);
+	         char * pass=addCharacters(password);
+	         strcpy(passwords[numOfPass].website,web);
+	         strcpy(passwords[numOfPass].password,pass);
+	         free(web);
+	         free(pass);
+	         numOfPass++;
+	         changed=true;
+		 return true;
+	}
 }
 
 //the return must be freed 
