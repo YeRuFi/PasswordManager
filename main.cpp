@@ -111,10 +111,17 @@ pwm->decrypt(pwm->encryptedData);
 pwm->printAll();
 }
 */
-
+/*
 int main()
 {
 	SlotPasswordManager mupwm;
 	mupwm.startUI();
 	shutdown();
+}*/
+int main(){
+while(true){
+SlotPasswordManager *mupwm=new SlotPasswordManager();
+	mupwm->startUI();
+delete mupwm;	
+}
 }

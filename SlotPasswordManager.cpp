@@ -5,8 +5,6 @@
 void SlotPasswordManager::startUI()
 {
 	char* input = new char[32];
-	do
-	{
 		printf("\nWelcome to the Password Manager with multiple slots!\n");
 		askinput: 
 		printf("Please choose your slot or type help: \n");
@@ -34,5 +32,4 @@ void SlotPasswordManager::startUI()
 		delete pwm;		
 		printf("Press enter to exit, type restart to login again\n");		
 		scanf("%s",input);
-	} while(input!="");
 }
