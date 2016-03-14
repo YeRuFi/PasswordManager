@@ -41,13 +41,20 @@
 
 using namespace std;
 
+/**
+ * Structure to store a website and its password
+ * WPTuple = Website Password Tuple
+ */
 struct WPTuple {
 	char website[PASSWORDLENGTH];
 	char password[PASSWORDLENGTH];
-
 };
 
-
+/**
+ * This class implements a Password Manager for a single user embedded on the STM32F407. \n
+ * It offers a user interface over the serial port / console. \n
+ * The passwords are stored encrypted (using AES) on the internal flash of the board. \n
+ */
 class PasswordManager
 {
 
