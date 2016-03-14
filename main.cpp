@@ -3,7 +3,9 @@
 #include <string>
 #include <stdio.h>
 using namespace miosix;
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!all functions and attributes are public for testing!!!!!!!!!
+
+/*
+//test functions need everything public in PasswordManager
 void writeTest()
 {
 	printf("WriteTest\n");	
@@ -108,13 +110,15 @@ pwm->loadData();
 pwm->decrypt(pwm->encryptedData);
 pwm->printAll();
 }
-
+*/
 
 int main()
 {
-	//writeReadTest(); //call test function
-	//printf("Does it work?"); //works with scanf at the end
-	//char p;	
-	//scanf("%c",&p);
-        test();			
+	PasswordManager pwm;
+	pwm.startUI();
+	do{
+		char in [32]; 		
+		scanf("%s", in);
+		printf("%i", pwm.getPosition(in));
+	}while(true);	
 }
