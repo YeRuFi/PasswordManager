@@ -259,6 +259,12 @@ private:
           *\return false wrong password
           */
 	bool checkMasterPassword();
+
+	/**
+	  * Function to scan the master password on the console
+          *\param memory allocated memory to store the master password
+          */
+	void scanPassword(char* memory);
       
 };
 

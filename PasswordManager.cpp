@@ -50,9 +50,7 @@ void PasswordManager::startUI()
     {
     checkpass:
         printf("Please enter the master password: \n");
-        //system("stty -echo"); //supported in miosix??
-        scanf("%s",input); //should not print password on screen!
-        //system("stty echo");
+	scanPassword(input); // let the user input the master password
         createKey(input);
         if(!decrypt(encryptedData))
         {
@@ -145,8 +143,8 @@ void PasswordManager::startUI()
             {
                 if(firstUse)
                 {
-                    printf("Write your password with which you want to encrypt the data:\n");
-                    scanf("%s",input);
+                    printf("Write your master password with which you want to encrypt the data:\n");
+                    scanPassword(input);
                     createKey(input);
                 }
                 encrypt();
@@ -423,7 +421,7 @@ bool PasswordManager::changeMasterPassword(){
 	{
      		char * givenPassword=(char *)malloc(32);;//variable to save the password given
 		printf("Insert new Password:\n");
-     		scanf("%s",givenPassword);
+     		scanPassword(givenPassword);
      		createKey(givenPassword);
      		printf("Password changed successfully\n");
      		free(givenPassword);
@@ -440,7 +438,7 @@ bool PasswordManager::checkMasterPassword()
      	unsigned char hashedGiven[16];//variable to put the hash of the given password
      	int i;
      	printf("Insert the master password:\n");
-     	scanf("%s",givenPassword);
+     	scanPassword(givenPassword);
      	char * pass=addCharacters(givenPassword);
      	mbedtls_md5((const unsigned char *)pass,32, hashedGiven);
      	for(i=0;i<16;i++){
@@ -453,6 +451,13 @@ bool PasswordManager::checkMasterPassword()
 	free(pass);
 	free(givenPassword);
 	return true;
+}
+
+void PasswordManager::scanPassword(char* memory)
+{
+        //system("stty -echo"); //supported in miosix??
+        scanf("%s",memory); //should not print password on screen!, dummy
+        //system("stty echo");
 }
 
 /**
