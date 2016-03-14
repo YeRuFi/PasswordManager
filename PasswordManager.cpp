@@ -236,6 +236,7 @@ void     PasswordManager::encrypt(){
          AES128_CBC_encrypt_buffer(encryptedData,toEncrypt,numOfPass*2*PASSWORDLENGTH+16, (const unsigned char*)key,(const unsigned char *)iv);
          //not sure ? free the memory allocated to the arrays
          free(toEncrypt);
+         free(iv);
          free(inputEn);        
 }
 bool PasswordManager::decrypt(unsigned char * input){
@@ -260,6 +261,7 @@ bool PasswordManager::decrypt(unsigned char * input){
          //calculate the hash of the array to transfom to compare it to the checksum
          mbedtls_md5((const unsigned char *)toTransform,sizeOfInput-16, toCheck );
          //check if the checksums are the same so if the password is correct
+         free(iv);
          for(i=0;i<16;i++){
          if(toCheck[i]!=checksum[i]){
           
@@ -269,7 +271,7 @@ bool PasswordManager::decrypt(unsigned char * input){
          }
          //password is correct so initialize the structure
          passwords=arrayToStruct((char *)toTransform,numOfPass,PASSWORDLENGTH);
-         
+         free(toTransform);
          return true;         
 }
 void PasswordManager::createKey(char * password){
