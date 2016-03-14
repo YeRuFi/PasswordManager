@@ -244,10 +244,21 @@ private:
           *Function to change the master password , it first asks for the old password if that is incorrect prints wrong password and then returns   
           *false
           * if password correct gives you the oportunity to put the new password and generates the new key
-          *\return bool false if the old password is different from the given one at first
+          *\return false if the old password is different from the given one at first
           */
         bool changeMasterPassword();
 
+	/**
+          * Function erase the user data and free a slot
+          *\return false for erase error
+          */
+	bool deleteData();
+
+	/**
+          * Function to check the identity of the user 
+          *\return false wrong password
+          */
+	bool checkMasterPassword();
       
 };
 

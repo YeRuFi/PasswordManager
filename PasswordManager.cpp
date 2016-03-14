@@ -114,6 +114,22 @@ void PasswordManager::startUI()
                 printf("Could not remove. Please check website name.\n");
             }
         }
+	else if(input[0]=='d') //delete
+        {
+       		printf("Be careful: All your data will be erased. This can not be undone. Type yes to continue:\n");
+            	scanf("%s",input);
+		if(input[0]=='y'){
+            		if(checkMasterPassword()){
+          			if(deleteData())
+				{
+					printf("Successfully erased\n");
+					break;
+				}
+				else
+					printf("Error while accessing flash\n");
+          		}
+		}
+        }
         else if(input[0]=='c') //commit
         {
             if(changed)
@@ -128,7 +144,7 @@ void PasswordManager::startUI()
                 if(storeData())
                     changed=false;
                 else
-                    printf("Error while storing the data on the flash");
+                    printf("Error while storing the data on the flash\n");
             }
         }
         else if(input[0]=='e'||input[0]=='q') //exit or quit
@@ -383,38 +399,51 @@ void PasswordManager::changePassword(char * website){
      printf("The website that you requested to change password does not exist\n");
      }else{
      char newPass[32];
-     printf("Please instert the new password for + %s \n",website);
+     printf("Please insert the new password for %s: \n",website);
      scanf("%s",newPass);
      char* pass=addCharacters(newPass);
      strcpy(passwords[i].password,pass);
      free(pass);
      changed=true;
-     printf("Password changed\n");
+     printf("Password changed successfully! \n");
      }
 }
 
 bool PasswordManager::changeMasterPassword(){
-     char * givenPassword=(char *)malloc(32);;//variable to save the passwords given by  
-     unsigned char hashedGiven[16];//variable to put the hash of the given password
-     int i;
-     printf("Insert your old password:\n");
-     scanf("%s",givenPassword);
-     char * pass=addCharacters(givenPassword);
-     mbedtls_md5((const unsigned char *)pass,32, hashedGiven);
-     for(i=0;i<16;i++){
-        if(hashedGiven[i]!=key[i]){
-           printf("Wrong Password! \n");
-           free(pass);
-           return false;
-          }
-     }
-     printf("Insert new Password:\n");
-     scanf("%s",givenPassword);
-     createKey(givenPassword);
-     printf("Password changed successfully\n");
-     free(pass);
-     return true;
+	if(checkMasterPassword())
+	{
+     		char * givenPassword=(char *)malloc(32);;//variable to save the password given
+		printf("Insert new Password:\n");
+     		scanf("%s",givenPassword);
+     		createKey(givenPassword);
+     		printf("Password changed successfully\n");
+     		free(givenPassword);
+     		return true;
+	}
+	else
+		return false;
      
+}
+
+bool PasswordManager::checkMasterPassword()
+{
+	char * givenPassword=(char *)malloc(32);;//variable to save the passwords given by  
+     	unsigned char hashedGiven[16];//variable to put the hash of the given password
+     	int i;
+     	printf("Insert the master password:\n");
+     	scanf("%s",givenPassword);
+     	char * pass=addCharacters(givenPassword);
+     	mbedtls_md5((const unsigned char *)pass,32, hashedGiven);
+     	for(i=0;i<16;i++){
+       		 if(hashedGiven[i]!=key[i]){
+           		free(pass);
+	  		free(givenPassword);
+          		return false;
+          	}
+     	}
+	free(pass);
+	free(givenPassword);
+	return true;
 }
 
 /**
@@ -478,6 +507,14 @@ void PasswordManager::loadData()
 		firstUse=true;
 		numOfPass=0;
 	}
+}
+
+bool PasswordManager::deleteData()
+{
+	//get flash driver instance (singleton):
+	FlashDriver& flashdriver = FlashDriver::instance();
+	//erase the sector with the password data:
+	return flashdriver.erase(flashdriver.getSectorNumber(address)); //necessary for flash (all is put to 0xFF)
 }
 
 
