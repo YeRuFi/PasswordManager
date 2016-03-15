@@ -202,9 +202,8 @@ private:
           *\param input[] the array to transform
           *\param numOfPasswords the number of passwords saved in the array
           *\param lengthOfWebsite the length of the website and password array 
-          *\return the wanted array of WPTuples
           */
-        WPTuple * arrayToStruct(char * input,int numOfPasswords,int lengthOfWebsite); 
+        void arrayToStruct(char * input,int numOfPasswords,int lengthOfWebsite); 
         
 	/**
           *Creates the key to encrypt and decrypt data from the password that the user is going to put

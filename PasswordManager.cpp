@@ -194,7 +194,7 @@ char * PasswordManager::structToArray(WPTuple input[],int numOfPasswords,int len
     return output;
 }
 
-WPTuple* PasswordManager::arrayToStruct(char * input,int numOfPasswords,int lengthOfWebsite){
+void PasswordManager::arrayToStruct(char * input,int numOfPasswords,int lengthOfWebsite){
     int i,j,z;
     z=0;
     for(i=0;i<numOfPasswords;i++){
@@ -267,7 +267,7 @@ bool PasswordManager::decrypt(unsigned char * input){
           }
          }
          //password is correct so initialize the structure
-         passwords=arrayToStruct((char *)toTransform,numOfPass,PASSWORDLENGTH);
+         arrayToStruct((char *)toTransform,numOfPass,PASSWORDLENGTH);
          free(toTransform);
          return true;         
 }
