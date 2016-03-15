@@ -60,8 +60,9 @@ public:
  
 private:
     
+	//Attributes	
 	/**
-	  * Attributes
+	  * Pointer to a PasswordManager which will be created with the address for the given slot
   	  */ 
 	PasswordManager* pwm;
       
