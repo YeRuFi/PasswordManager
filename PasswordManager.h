@@ -231,7 +231,7 @@ private:
           *\param input the array to be transformed
           *\return string 
           */
-        char * transformArray(char input[32]);  
+        char * transformArray(char input[PASSWORDLENGTH]);  
         
 	/**
           * searches for the given website and allows to change the password for it

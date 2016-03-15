@@ -284,7 +284,7 @@ void PasswordManager::createKey(char * password){
          }      
 
 }
-bool PasswordManager::cmpChar(char one[32],char two[32]){
+bool PasswordManager::cmpChar(char one[PASSWORDLENGTH],char two[PASSWORDLENGTH]){
     int i;
     for(i=0;i<31;i++){
         if(one[i]!=two[i]){
@@ -296,13 +296,13 @@ bool PasswordManager::cmpChar(char one[32],char two[32]){
 
 //the return value must be freed every time 
 char * PasswordManager::addCharacters(char * input){
-         char * output=(char *) malloc(32*sizeof(char));
+         char * output=(char *) malloc(PASSWORDLENGTH*sizeof(char));
          int i;
          int size=(int)strlen(input);
          for(i=0;i<size+1;i++){
          output[i]=input[i];
          }
-         for(i=size+1;i<32;i++){
+         for(i=size+1;i<PASSWORDLENGTH;i++){
          output[i]=(char)255;
          }  
          return output;
@@ -326,10 +326,10 @@ bool PasswordManager::addPassword(char * website,char * password){
 }
 
 //the return must be freed 
-char * PasswordManager::transformArray(char input[32]){
+char * PasswordManager::transformArray(char input[PASSWORDLENGTH]){
          int size,i;
          size=0;
-         for(i=0;i<32;i++){
+         for(i=0;i<PASSWORDLENGTH;i++){
             if(input[i]==(char)255){
                break;
             }
@@ -404,7 +404,7 @@ void PasswordManager::changePassword(char * website){
      if(i==-1){
      printf("The website that you requested to change password does not exist\n");
      }else{
-     char newPass[32];
+     char newPass[PASSWORDLENGTH];
      printf("Please insert the new password for %s: \n",website);
      scanf("%s",newPass);
      char* pass=addCharacters(newPass);
