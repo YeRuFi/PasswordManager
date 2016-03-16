@@ -35,4 +35,5 @@ void SlotPasswordManager::startUI()
 		printf("Press enter to exit, type restart to login again\n");		
 		scanf("%s",input);
 	} while(input!="");
+	delete[] input;
 }
